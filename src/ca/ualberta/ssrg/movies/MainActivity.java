@@ -27,7 +27,7 @@ public class MainActivity extends Activity {
 	private ArrayAdapter<Movie> moviesViewAdapter;
 
 	private IMovieManager movieManager;
-
+	
 	private Context mContext = this;
 
 	// Thread to update adapter after an operation
@@ -84,6 +84,9 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+		
+		Thread thread = new SearchThread("dark");
+		thread.start();
 
 		// Refresh the list when visible
 		// TODO: Search all
@@ -125,7 +128,19 @@ public class MainActivity extends Activity {
 
 
 	class SearchThread extends Thread {
-		// TODO: Implement search thread
+		//where to write stuff to communicate with the network
+		
+		private String search;
+
+		public SearchThread(String search) {
+			this.search = search;
+		}
+		
+		public void run() {
+			movies.addAll(movieManager.searchMovies(search, null));
+			//movieManager.searchMovies(search, null);
+			runOnUiThread(doUpdateGUIList);
+		}
 		
 	}
 
